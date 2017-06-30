@@ -1,0 +1,12 @@
+[{
+  "modid": "expstore",
+  "name": "Experience Store",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "",
+  "url": "",
+  "updateJSON": "",
+  "authorList": ["Valgard Trontheim (a.k.a Sven Pöche)"],
+  "credits": ""
+}]
