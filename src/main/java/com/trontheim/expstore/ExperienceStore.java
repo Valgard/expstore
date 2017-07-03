@@ -30,7 +30,7 @@ public class ExperienceStore
 {
   public static final String MODID = "expstore";
   public static final String NAME = "Experience Store";
-  public static final String VERSION = "0.0.1-alpha";
+  public static final String VERSION = "0.0.2-alpha";
   public static final String MCVERSION = "[1.7.10]";
 
   private static final boolean developmentEnvironment = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
