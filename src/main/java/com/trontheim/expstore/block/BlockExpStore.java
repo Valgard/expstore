@@ -1,61 +1,102 @@
 package com.trontheim.expstore.block;
 
 import com.trontheim.expstore.ExperienceStore;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
+import com.trontheim.expstore.tileentity.TileEntityExpStore;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BlockExpStore extends Block {
+public class BlockExpStore extends BlockContainer {
 
-  private Logger logger;
+  private static final Logger logger = LogManager.getLogger(ExperienceStore.MODID);
 
   public BlockExpStore() {
-    super(Material.rock);
+    super(Material.iron);
+    setCreativeTab(CreativeTabs.tabBlock);
     setBlockName(ExperienceStore.MODID + "_expStoreBlock");
     setBlockTextureName(ExperienceStore.MODID + ":expStoreBlock");
-    setCreativeTab(CreativeTabs.tabBlock);
-    blockHardness = 10F;
-    blockResistance = 100;
+    setHardness(3F);
+    setResistance(8F);
+    setStepSound(soundTypeWood);
   }
 
-  @SideOnly(Side.CLIENT)
-  public void registerIcons(IIconRegister icon) {
-    blockIcon = icon.registerIcon(ExperienceStore.MODID + ":BlockExpStore");
-  }
-
+  @Override
   public boolean isOpaqueCube() {
     return false;
   }
 
-  public void setLogger(Logger log) {
-    logger = log;
+  @Override
+  public TileEntity createNewTileEntity(World world, int metadata) {
+    return new TileEntityExpStore();
+  }
+
+  private TileEntityExpStore getTileEntity(World world, int x, int y, int z) {
+    // gets tile entity from the location
+    TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+    // check for the right TileEntity class
+    if(!(tileEntity instanceof TileEntityExpStore)) {
+      return null;
+    }
+
+    return (TileEntityExpStore) tileEntity;
+  }
+
+  private void setTileEntity(World world, int x, int y, int z, TileEntityExpStore tileEntityExpStore) {
+    // sets the tile entity at the location
+    world.setTileEntity(x, y, z, tileEntityExpStore);
   }
 
   @Override
   public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-    if(player.isSneaking()) {
-      player.experienceLevel = 0;
-      player.experience = 0.0F;
-      player.experienceTotal = 0;
-      player.setScore(0);
-      // player.addExperience(-10);
+    if(world.isRemote) {
+      return false;
     }
-    logger.info("["+ExperienceStore.MODID+"][1]: " + player.experience + " | " + player.experienceLevel + " | " + player.experienceTotal + " | " + player.getScore());
-    return super.onBlockActivated(world, x, y, z, player, p_149727_6_, p_149727_7_, p_149727_8_, p_149727_9_);
+
+    TileEntityExpStore tileEntityExpStore = getTileEntity(world, x, y ,z);
+
+    if(tileEntityExpStore == null) {
+      return false;
+    }
+
+    // change something
+    if(player.isSneaking()) {
+      tileEntityExpStore.restoreExperiencePoints(player);
+    }
+
+    // sets the tile entity at the location
+    setTileEntity(world, x, y, z, tileEntityExpStore);
+
+    return true;
   }
 
   @Override
   public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
-    if(player.isSneaking()) {
-      player.addExperience(10);
+    if(world.isRemote) {
+      return;
     }
-    logger.info("["+ExperienceStore.MODID+"][2]: " + player.experience + " | " + player.experienceLevel + " | " + player.experienceTotal + " | " + player.getScore());
-    super.onBlockClicked(world, x, y, z, player);
+
+    TileEntityExpStore tileEntityExpStore = getTileEntity(world, x, y ,z);
+
+    if(tileEntityExpStore == null) {
+      return;
+    }
+
+    // change something
+    if(player.isSneaking()) {
+      tileEntityExpStore.storeExperiencePoints(player);
+    } else {
+      player.addChatComponentMessage(new ChatComponentText("stored experience points: " + tileEntityExpStore.getSoredExperiencePoints(player).toString()));
+    }
+
+    // sets the tile entity at the location
+    setTileEntity(world, x, y, z, tileEntityExpStore);
   }
+
 }
