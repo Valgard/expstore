@@ -1,18 +1,39 @@
 package com.trontheim.expstore.block;
 
 import com.trontheim.expstore.ExperienceStore;
+import com.trontheim.expstore.client.renderer.block.RenderBlockExpStore;
 import com.trontheim.expstore.tileentity.TileEntityExpStore;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+
 public class BlockExpStore extends BlockContainer {
+
+  @SideOnly(Side.CLIENT)
+  private IIcon blockIconSouth;
+  @SideOnly(Side.CLIENT)
+  private IIcon blockIconEast;
+  @SideOnly(Side.CLIENT)
+  private IIcon blockIconWest;
+  @SideOnly(Side.CLIENT)
+  private IIcon blockIconTop;
+  @SideOnly(Side.CLIENT)
+  private IIcon blockIconBottom;
 
   private static final Logger logger = LogManager.getLogger(ExperienceStore.MODID);
 
@@ -24,6 +45,27 @@ public class BlockExpStore extends BlockContainer {
     setHardness(3F);
     setResistance(8F);
     setStepSound(soundTypeWood);
+    setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
+  }
+
+  @SideOnly(Side.CLIENT)
+  public void registerBlockIcons(IIconRegister iconRegister) {
+    blockIcon = iconRegister.registerIcon(getTextureName() + "_north");
+    blockIconSouth = iconRegister.registerIcon(getTextureName() + "_south");
+    blockIconEast = iconRegister.registerIcon(getTextureName() + "_east");
+    blockIconWest = iconRegister.registerIcon(getTextureName() + "_west");
+    blockIconTop = iconRegister.registerIcon(getTextureName() + "_top");
+    blockIconBottom = iconRegister.registerIcon(getTextureName() + "_bottom");
+  }
+
+  @Override
+  public int getRenderType() {
+    return RenderBlockExpStore.instance().getRenderId();
+  }
+
+  @SideOnly(Side.CLIENT)
+  public String getItemIconName() {
+    return getTextureName();
   }
 
   @Override
@@ -32,8 +74,76 @@ public class BlockExpStore extends BlockContainer {
   }
 
   @Override
+  public boolean renderAsNormalBlock() {
+    return false;
+  }
+
+  @SideOnly(Side.CLIENT)
+  public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
+    return true;
+  }
+
+  @SideOnly(Side.CLIENT)
+  public IIcon getIcon(int side, int meta) {
+    return side == 1 ? blockIconTop: blockIcon;
+  }
+
+  public IIcon getIcon(String icon) {
+    IIcon result;
+
+    result = blockIcon;
+
+    if(icon.equals("south")) {
+      result = blockIconSouth;
+    }
+    else if(icon.equals("east")) {
+      result = blockIconEast;
+    }
+    else if(icon.equals("west")) {
+      result = blockIconWest;
+    }
+    else if(icon.equals("top")) {
+      result = blockIconTop;
+    }
+    else if(icon.equals("bottom")) {
+      result = blockIconBottom;
+    }
+
+    return result;
+  }
+
+  @Override
   public TileEntity createNewTileEntity(World world, int metadata) {
     return new TileEntityExpStore();
+  }
+
+  @Override
+  public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+    setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
+  }
+
+  @Override
+  public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List list, Entity entity) {
+    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
+    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+
+    float pixel = 0.0625F;
+
+    float f = 0.125F;
+    setBlockBounds(0.0F, 0.0F, 0.0F, f, 1.0F, 1.0F);
+    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, f);
+    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+    setBlockBounds(1.0F - f, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+    setBlockBounds(0.0F, 0.0F, 1.0F - f, 1.0F, 1.0F, 1.0F);
+    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+
+  }
+
+  public TileEntityExpStore getTileEntity(IBlockAccess world, int x, int y, int z) {
+    return getTileEntity((World) world, x, y ,z);
   }
 
   private TileEntityExpStore getTileEntity(World world, int x, int y, int z) {

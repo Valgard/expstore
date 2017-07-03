@@ -2,7 +2,9 @@ package com.trontheim.expstore;
 
 import com.trontheim.expstore.block.BlockExpChanger;
 import com.trontheim.expstore.block.BlockExpStore;
+import com.trontheim.expstore.client.renderer.block.RenderBlockExpStore;
 import com.trontheim.expstore.tileentity.TileEntityExpStore;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -45,6 +47,7 @@ public class ExperienceStore
     GameRegistry.registerBlock(expChangerBlock, "expChangerBlock");
 
     TileEntity.addMapping(TileEntityExpStore.class, MODID + ":TileEntityExpStore");
+    RenderingRegistry.registerBlockHandler(RenderBlockExpStore.instance());
 
     GameRegistry.addShapelessRecipe(new ItemStack(Blocks.dirt, 2), new ItemStack(Blocks.dirt));
     GameRegistry.addShapelessRecipe(new ItemStack(expStoreBlock), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt));
