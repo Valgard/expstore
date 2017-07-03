@@ -85,7 +85,35 @@ public class BlockExpStore extends BlockContainer {
 
   @SideOnly(Side.CLIENT)
   public IIcon getIcon(int side, int meta) {
-    return side == 1 ? blockIconTop: blockIcon;
+    String result = "";
+
+    switch (side) {
+      case 0:
+        result = "bottom";
+        break;
+
+      case 1:
+        result = "top";
+        break;
+
+      case 2:
+        result = "north";
+        break;
+
+      case 3:
+        result = "south";
+        break;
+
+      case 4:
+        result = "west";
+        break;
+
+      case 5:
+        result = "east";
+        break;
+    }
+
+    return getIcon(result);
   }
 
   public IIcon getIcon(String icon) {
@@ -124,22 +152,21 @@ public class BlockExpStore extends BlockContainer {
 
   @Override
   public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List list, Entity entity) {
-    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
+    setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
     super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
 
     float pixel = 0.0625F;
 
-    float f = 0.125F;
-    setBlockBounds(0.0F, 0.0F, 0.0F, f, 1.0F, 1.0F);
-    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, f);
-    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-    setBlockBounds(1.0F - f, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-    setBlockBounds(0.0F, 0.0F, 1.0F - f, 1.0F, 1.0F, 1.0F);
-    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-
+    // float f = 0.125F;
+    // setBlockBounds(0.0F, 0.0F, 0.0F, f, 1.0F, 1.0F);
+    // super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+    // setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, f);
+    // super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+    // setBlockBounds(1.0F - f, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+    // super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+    // setBlockBounds(0.0F, 0.0F, 1.0F - f, 1.0F, 1.0F, 1.0F);
+    // super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+    // setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
   }
 
   public TileEntityExpStore getTileEntity(IBlockAccess world, int x, int y, int z) {

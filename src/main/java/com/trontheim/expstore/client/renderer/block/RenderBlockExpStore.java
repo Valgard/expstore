@@ -13,6 +13,12 @@ import net.minecraft.world.IBlockAccess;
 
 public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
 
+  private int width = 16;
+
+  private float offsetX = 0;
+  private float offsetY = 0;
+  private float offsetZ = 0;
+
   private static RenderBlockExpStore instance = new RenderBlockExpStore();
 
   private int renderId = RenderingRegistry.getNextAvailableRenderId();
@@ -27,8 +33,6 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
   }
 
   public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, BlockExpStore block, int modelId, RenderBlocks renderer) {
-    setColor(world, x, y, z, block);
-
     return renderBlockMetadata(block, x, y, z, world.getBlockMetadata(x, y, z), false, renderer);
   }
 
@@ -51,169 +55,59 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     //
     // ********************************************************************************
 
-
-    double d0 = 0.625D;
-    renderer.setRenderBounds(0.0D, d0, 0.0D, 1.0D, 1.0D, 1.0D);
-
-    int i1 = 0;
-
-    if (isItem)
-    {
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, -1.0F, 0.0F);
-      renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 0, metadata));
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 1.0F, 0.0F);
-      renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 1, metadata));
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 0.0F, -1.0F);
-      renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 2, metadata));
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 0.0F, 1.0F);
-      renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 3, metadata));
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-      renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 4, metadata));
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(1.0F, 0.0F, 0.0F);
-      renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 5, metadata));
-      tessellator.draw();
+    if (isItem) {
     }
-    else
-    {
-      renderer.renderStandardBlock(block, x, y, z);
-    }
-
-    if (!isItem) {
+    else {
       setColor(renderer.blockAccess, x, y, z, block);
-    }
-
-    IIcon iicon = block.getIcon("north");
-    IIcon iicon1 = block.getIcon("top");
-
-    float f1 = 0.125F;
-
-    if (isItem)
-    {
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(1.0F, 0.0F, 0.0F);
-      renderer.renderFaceXPos(block, (double)(-1.0F + f1), 0.0D, 0.0D, iicon);
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-      renderer.renderFaceXNeg(block, (double)(1.0F - f1), 0.0D, 0.0D, iicon);
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 0.0F, 1.0F);
-      renderer.renderFaceZPos(block, 0.0D, 0.0D, (double)(-1.0F + f1), iicon);
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 0.0F, -1.0F);
-      renderer.renderFaceZNeg(block, 0.0D, 0.0D, (double)(1.0F - f1), iicon);
-      tessellator.draw();
-
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 1.0F, 0.0F);
-      renderer.renderFaceYPos(block, 0.0D, -1.0D + d0, 0.0D, iicon1);
-      tessellator.draw();
-    }
-    else
-    {
-      renderer.renderFaceXPos(block, (double)((float) x - 1.0F + f1), (double) y, (double) z, iicon);
-      renderer.renderFaceXNeg(block, (double)((float) x + 1.0F - f1), (double) y, (double) z, iicon);
-      renderer.renderFaceZPos(block, (double) x, (double) y, (double)((float) z - 1.0F + f1), iicon);
-      renderer.renderFaceZNeg(block, (double) x, (double) y, (double)((float) z + 1.0F - f1), iicon);
-      renderer.renderFaceYPos(block, (double) x, (double)((float) y - 1.0F) + d0, (double) z, iicon1);
-    }
-
-    renderer.setOverrideBlockTexture(iicon);
-    double d3 = 0.25D;
-    double d4 = 0.25D;
-    renderer.setRenderBounds(d3, d4, d3, 1.0D - d3, d0 - 0.002D, 1.0D - d3);
-
-    if (isItem)
-    {
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(1.0F, 0.0F, 0.0F);
-      renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, iicon);
-      tessellator.draw();
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-      renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, iicon);
-      tessellator.draw();
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 0.0F, 1.0F);
-      renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, iicon);
-      tessellator.draw();
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 0.0F, -1.0F);
-      renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, iicon);
-      tessellator.draw();
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, 1.0F, 0.0F);
-      renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, iicon);
-      tessellator.draw();
-      tessellator.startDrawingQuads();
-      tessellator.setNormal(0.0F, -1.0F, 0.0F);
-      renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, iicon);
-      tessellator.draw();
-    }
-    else
-    {
+      setRenderOrigin(2, 0, 2);
+      addRenderBox(renderer, 1, 1, 1, 10, 12, 10);
       renderer.renderStandardBlock(block, x, y, z);
-    }
-
-    if (!isItem)
-    {
-      double d1 = 0.375D;
-      double d2 = 0.25D;
-      renderer.setOverrideBlockTexture(iicon);
-
-      if (i1 == 0)
-      {
-        renderer.setRenderBounds(d1, 0.0D, d1, 1.0D - d1, 0.25D, 1.0D - d1);
-        renderer.renderStandardBlock(block, x, y, z);
-      }
-
-      if (i1 == 2)
-      {
-        renderer.setRenderBounds(d1, d4, 0.0D, 1.0D - d1, d4 + d2, d3);
-        renderer.renderStandardBlock(block, x, y, z);
-      }
-
-      if (i1 == 3)
-      {
-        renderer.setRenderBounds(d1, d4, 1.0D - d3, 1.0D - d1, d4 + d2, 1.0D);
-        renderer.renderStandardBlock(block, x, y, z);
-      }
-
-      if (i1 == 4)
-      {
-        renderer.setRenderBounds(0.0D, d4, d1, d3, d4 + d2, 1.0D - d1);
-        renderer.renderStandardBlock(block, x, y, z);
-      }
-
-      if (i1 == 5)
-      {
-        renderer.setRenderBounds(1.0D - d3, d4, d1, 1.0D, d4 + d2, 1.0D - d1);
-        renderer.renderStandardBlock(block, x, y, z);
-      }
+      addRenderBox(renderer, 11, 1, 0, 1, 12, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 11, 1, 11, 1, 12, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 0, 1, 0, 1, 12, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 0, 1, 11, 1, 12, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 0, 0, 0, 12, 1, 12);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 0, 13, 0, 12, 1, 12);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 2, 14, 2, 8, 1, 8);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 2, 14, 1, 8, 1, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 2, 14, 10, 8, 1, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 10, 14, 2, 1, 1, 8);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 1, 14, 2, 1, 1, 8);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 3, 15, 3, 6, 1, 6);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 3, 15, 2, 6, 1, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 3, 15, 9, 6, 1, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 9, 15, 3, 1, 1, 6);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 2, 15, 3, 1, 1, 6);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 4, 5, 0, 4, 4, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 5, 9, 0, 2, 1, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 5, 4, 0, 2, 1, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 8, 6, 0, 1, 2, 1);
+      renderer.renderStandardBlock(block, x, y, z);
+      addRenderBox(renderer, 3, 6, 0, 1, 2, 1);
+      renderer.renderStandardBlock(block, x, y, z);
     }
 
     renderer.clearOverrideBlockTexture();
+
     return true;
   }
 
@@ -256,6 +150,29 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     }
 
     tessellator.setColorOpaque_F(red, green, blue);
+  }
+
+  public void setWidth(int width) {
+    this.width = width;
+  }
+
+  private void addRenderBox(RenderBlocks renderer, float x, float y, float z, float width, float height, float depth) {
+    float pixel = 1F / this.width;
+
+    x = (offsetX + x) * pixel;
+    y = (offsetY + y) * pixel;
+    z = (offsetZ + z) * pixel;
+    width  = x + (width  * pixel);
+    height = y + (height * pixel);
+    depth  = z + (depth  * pixel);
+
+    renderer.setRenderBounds(x , y, z, width, height, depth);
+  }
+
+  private void setRenderOrigin(int x, int y, int z) {
+    offsetX = x;
+    offsetY = y;
+    offsetZ = z;
   }
 
 }
