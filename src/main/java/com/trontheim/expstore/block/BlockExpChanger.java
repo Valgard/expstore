@@ -17,10 +17,12 @@ public class BlockExpChanger extends Block {
 
   private static final Logger logger = LogManager.getLogger(ExperienceStore.MODID);
 
+  public static final String NAME = "expchanger";
+
   public BlockExpChanger() {
     super(Material.rock);
-    setBlockName(ExperienceStore.MODID + "_expChangerBlock");
-    setBlockTextureName(ExperienceStore.MODID + ":expChangerBlock");
+    setBlockName(ExperienceStore.MODID + "." + NAME);
+    setBlockTextureName(ExperienceStore.MODID + ":" + NAME);
     setCreativeTab(CreativeTabs.tabBlock);
     setHardness(3F);
     setResistance(8F);

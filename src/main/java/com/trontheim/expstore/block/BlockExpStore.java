@@ -25,6 +25,7 @@ import java.util.List;
 public class BlockExpStore extends BlockContainer {
 
   private static final Logger logger = LogManager.getLogger(ExperienceStore.MODID);
+
   @SideOnly(Side.CLIENT)
   private IIcon blockIconSouth;
   @SideOnly(Side.CLIENT)
@@ -36,11 +37,13 @@ public class BlockExpStore extends BlockContainer {
   @SideOnly(Side.CLIENT)
   private IIcon blockIconBottom;
 
+  public static final String NAME = "expstore";
+
   public BlockExpStore() {
     super(Material.iron);
     setCreativeTab(CreativeTabs.tabBlock);
-    setBlockName(ExperienceStore.MODID + "_expStoreBlock");
-    setBlockTextureName(ExperienceStore.MODID + ":expStoreBlock");
+    setBlockName(ExperienceStore.MODID + "." + NAME);
+    setBlockTextureName(ExperienceStore.MODID + ":" + NAME);
     setHardness(3F);
     setResistance(8F);
     setLightLevel(0.5F);
@@ -121,19 +124,6 @@ public class BlockExpStore extends BlockContainer {
   public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List list, Entity entity) {
     setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
     super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-
-    float pixel = 0.0625F;
-
-    // float f = 0.125F;
-    // setBlockBounds(0.0F, 0.0F, 0.0F, f, 1.0F, 1.0F);
-    // super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-    // setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, f);
-    // super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-    // setBlockBounds(1.0F - f, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-    // super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-    // setBlockBounds(0.0F, 0.0F, 1.0F - f, 1.0F, 1.0F, 1.0F);
-    // super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-    // setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
   }
 
   @Override
