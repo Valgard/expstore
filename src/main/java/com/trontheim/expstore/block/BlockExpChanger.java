@@ -22,8 +22,11 @@ public class BlockExpChanger extends Block {
     setBlockName(ExperienceStore.MODID + "_expChangerBlock");
     setBlockTextureName(ExperienceStore.MODID + ":expChangerBlock");
     setCreativeTab(CreativeTabs.tabBlock);
-    blockHardness = 10F;
-    blockResistance = 100;
+    setHardness(3F);
+    setResistance(8F);
+    setLightLevel(0.5F);
+    setStepSound(soundTypeStone);
+    setHarvestLevel("pickaxe", 2);
   }
 
   @SideOnly(Side.CLIENT)

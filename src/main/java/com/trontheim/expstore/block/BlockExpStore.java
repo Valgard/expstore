@@ -43,7 +43,9 @@ public class BlockExpStore extends BlockContainer {
     setBlockTextureName(ExperienceStore.MODID + ":expStoreBlock");
     setHardness(3F);
     setResistance(8F);
-    setStepSound(soundTypeWood);
+    setLightLevel(0.5F);
+    setStepSound(soundTypeMetal);
+    setHarvestLevel("pickaxe", 2);
     setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
   }
 
