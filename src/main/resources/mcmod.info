@@ -1,12 +1,24 @@
 [{
   "modid": "expstore",
-  "name": "Experience Store",
-  "description": "",
+  "name": "Experience Store - Your safe experience bank",
+  "description": "These modification adds a new block to save your experience points in the world.\nThe experience points are stored separately for each player.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "logoFile": "",
-  "url": "",
-  "updateJSON": "",
-  "authorList": ["Valgard Trontheim (a.k.a Sven Pöche)"],
-  "credits": ""
+  "url": "http://minecraft.valgard-lp.de/mods/expstore/",
+  "updateUrl": "",
+  "authorList": [
+    "Valgard Trontheim (a.k.a Sven Pöche)"
+  ],
+  "credits": "",
+  "url": "http://minecraft.valgard-lp.de/mods/expstore/",
+  "logoFile": "logo.png",
+  "screenshots": [
+  ],
+  "parent":"",
+  "requiredMods": [ 
+    "Forge"
+  ],
+  "dependencies": [
+  ],
+  "useDependencyInformation": "true"
 }]
