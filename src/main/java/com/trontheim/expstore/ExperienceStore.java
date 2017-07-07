@@ -46,10 +46,6 @@ public class ExperienceStore
     TileEntity.addMapping(TileEntityExpStore.class, MODID + ":TileEntityExpStore");
     RenderingRegistry.registerBlockHandler(RenderBlockExpStore.instance());
 
-    // GameRegistry.addShapelessRecipe(new ItemStack(Blocks.dirt, 2), new ItemStack(Blocks.dirt));
-    // GameRegistry.addShapelessRecipe(new ItemStack(expStoreBlock), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt));
-    // GameRegistry.addShapelessRecipe(new ItemStack(expChangerBlock), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt));
-    // GameRegistry.addShapelessRecipe(new ItemStack(Blocks.hopper), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt));
 
     GameRegistry.addRecipe(new ItemStack(expStoreBlock), "ogo", "gGg", "ogo", 'o', Blocks.obsidian, 'g', Items.gold_ingot, 'G', Blocks.glass);
 
@@ -57,6 +53,11 @@ public class ExperienceStore
       BlockExpChanger expChangerBlock = new BlockExpChanger();
       GameRegistry.registerBlock(expChangerBlock, "expChangerBlock");
       GameRegistry.addRecipe(new ItemStack(expChangerBlock), "ogo", "gGg", "ogo", 'o', Blocks.obsidian, 'g', Blocks.gold_block, 'G', Blocks.glass);
+
+      GameRegistry.addShapelessRecipe(new ItemStack(Blocks.dirt, 2), new ItemStack(Blocks.dirt));
+      GameRegistry.addShapelessRecipe(new ItemStack(expStoreBlock), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt));
+      GameRegistry.addShapelessRecipe(new ItemStack(expChangerBlock), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt));
+      GameRegistry.addShapelessRecipe(new ItemStack(Blocks.hopper), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt), new ItemStack(Blocks.dirt));
     }
   }
 
