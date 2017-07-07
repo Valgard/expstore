@@ -1,6 +1,5 @@
 package com.trontheim.expstore.client.renderer.block;
 
-
 import com.trontheim.expstore.block.BlockExpStore;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -8,23 +7,19 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
 public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
 
+  private static RenderBlockExpStore instance = new RenderBlockExpStore();
   private int width = 16;
-
   private float offsetX = 0;
   private float offsetY = 0;
   private float offsetZ = 0;
-
-  private static RenderBlockExpStore instance = new RenderBlockExpStore();
-
   private int renderId = RenderingRegistry.getNextAvailableRenderId();
 
-  public void renderInventoryBlock(BlockExpStore block, int metadata, int modelId, RenderBlocks renderer) {
-    renderBlockMetadata(block, 0, 0, 0, metadata, true, renderer);
+  public static RenderBlockExpStore instance() {
+    return instance;
   }
 
   @Override
@@ -32,13 +27,12 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     renderInventoryBlock((BlockExpStore) block, metadata, modelId, renderer);
   }
 
-  public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, BlockExpStore block, int modelId, RenderBlocks renderer) {
-    return renderBlockMetadata(block, x, y, z, world.getBlockMetadata(x, y, z), false, renderer);
+  public void renderInventoryBlock(BlockExpStore block, int metadata, int modelId, RenderBlocks renderer) {
+    renderBlockMetadata(block, 0, 0, 0, metadata, true, renderer);
   }
 
   public boolean renderBlockMetadata(BlockExpStore block, int x, int y, int z, int metadata, boolean isItem, RenderBlocks renderer) {
     Tessellator tessellator = Tessellator.instance;
-
 
     // ********************************************************************************
     //
@@ -55,7 +49,7 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     //
     // ********************************************************************************
 
-    if (isItem) {
+    if(isItem) {
     }
     else {
       setColor(renderer.blockAccess, x, y, z, block);
@@ -111,9 +105,53 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     return true;
   }
 
+  private void setColor(IBlockAccess world, int x, int y, int z, BlockExpStore block) {
+    Tessellator tessellator = Tessellator.instance;
+
+    tessellator.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
+    int color = block.colorMultiplier(world, x, y, z);
+    float red = (color >> 16 & 255) / 255.0F;
+    float green = (color >> 8 & 255) / 255.0F;
+    float blue = (color & 255) / 255.0F;
+
+    if(EntityRenderer.anaglyphEnable) {
+      float redAnaglyph = (red * 30.0F + green * 59.0F + blue * 11.0F) / 100.0F;
+      float greenAnaglyph = (red * 30.0F + green * 70.0F) / 100.0F;
+      float blueAnaglyph = (red * 30.0F + green * 70.0F) / 100.0F;
+      red = redAnaglyph;
+      green = greenAnaglyph;
+      blue = blueAnaglyph;
+    }
+
+    tessellator.setColorOpaque_F(red, green, blue);
+  }
+
+  private void setRenderOrigin(int x, int y, int z) {
+    offsetX = x;
+    offsetY = y;
+    offsetZ = z;
+  }
+
+  private void addRenderBox(RenderBlocks renderer, float x, float y, float z, float width, float height, float depth) {
+    float pixel = 1F / this.width;
+
+    x = (offsetX + x) * pixel;
+    y = (offsetY + y) * pixel;
+    z = (offsetZ + z) * pixel;
+    width = x + (width * pixel);
+    height = y + (height * pixel);
+    depth = z + (depth * pixel);
+
+    renderer.setRenderBounds(x, y, z, width, height, depth);
+  }
+
   @Override
   public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
     return renderWorldBlock(world, x, y, z, (BlockExpStore) block, modelId, renderer);
+  }
+
+  public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, BlockExpStore block, int modelId, RenderBlocks renderer) {
+    return renderBlockMetadata(block, x, y, z, world.getBlockMetadata(x, y, z), false, renderer);
   }
 
   @Override
@@ -126,53 +164,8 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     return renderId;
   }
 
-  public static RenderBlockExpStore instance() {
-    return instance;
-  }
-
-  private void setColor(IBlockAccess world, int x, int y, int z, BlockExpStore block) {
-    Tessellator tessellator = Tessellator.instance;
-
-    tessellator.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
-    int color = block.colorMultiplier(world, x, y, z);
-    float red = (color >> 16 & 255) / 255.0F;
-    float green = (color >> 8 & 255) / 255.0F;
-    float blue = (color & 255) / 255.0F;
-
-    if (EntityRenderer.anaglyphEnable)
-    {
-      float redAnaglyph = (red * 30.0F + green * 59.0F + blue * 11.0F) / 100.0F;
-      float greenAnaglyph = (red * 30.0F + green * 70.0F) / 100.0F;
-      float blueAnaglyph = (red * 30.0F + green * 70.0F) / 100.0F;
-      red = redAnaglyph;
-      green = greenAnaglyph;
-      blue = blueAnaglyph;
-    }
-
-    tessellator.setColorOpaque_F(red, green, blue);
-  }
-
   public void setWidth(int width) {
     this.width = width;
-  }
-
-  private void addRenderBox(RenderBlocks renderer, float x, float y, float z, float width, float height, float depth) {
-    float pixel = 1F / this.width;
-
-    x = (offsetX + x) * pixel;
-    y = (offsetY + y) * pixel;
-    z = (offsetZ + z) * pixel;
-    width  = x + (width  * pixel);
-    height = y + (height * pixel);
-    depth  = z + (depth  * pixel);
-
-    renderer.setRenderBounds(x , y, z, width, height, depth);
-  }
-
-  private void setRenderOrigin(int x, int y, int z) {
-    offsetX = x;
-    offsetY = y;
-    offsetZ = z;
   }
 
 }

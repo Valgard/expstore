@@ -7,9 +7,9 @@ import com.trontheim.expstore.tileentity.TileEntityExpStore;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -20,14 +20,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(
-        modid = ExperienceStore.MODID,
-        name = ExperienceStore.NAME,
-        version = ExperienceStore.VERSION,
-        acceptedMinecraftVersions = ExperienceStore.MCVERSION
-        // updateJSON = "http://minecraft.valgard-lp.de"
+  modid = ExperienceStore.MODID,
+  name = ExperienceStore.NAME,
+  version = ExperienceStore.VERSION,
+  acceptedMinecraftVersions = ExperienceStore.MCVERSION
+  // updateJSON = "http://minecraft.valgard-lp.de"
 )
-public class ExperienceStore
-{
+public class ExperienceStore {
+
   public static final String MODID = "expstore";
   public static final String NAME = "Experience Store";
   public static final String VERSION = "0.0.2-alpha";
@@ -37,15 +37,15 @@ public class ExperienceStore
 
   private static final Logger logger = LogManager.getLogger(MODID);
 
+  private static ExperienceStore instance = new ExperienceStore();
+
   @EventHandler
-  public void preinit(FMLPreInitializationEvent event)
-  {
+  public void preinit(FMLPreInitializationEvent event) {
     BlockExpStore expStoreBlock = new BlockExpStore();
     GameRegistry.registerBlock(expStoreBlock, "expStoreBlock");
 
     TileEntity.addMapping(TileEntityExpStore.class, MODID + ":TileEntityExpStore");
     RenderingRegistry.registerBlockHandler(RenderBlockExpStore.instance());
-
 
     GameRegistry.addRecipe(new ItemStack(expStoreBlock), "ogo", "gGg", "ogo", 'o', Blocks.obsidian, 'g', Items.gold_ingot, 'G', Blocks.glass);
 
@@ -61,18 +61,16 @@ public class ExperienceStore
     }
   }
 
-  @EventHandler
-  public void init(FMLInitializationEvent event)
-  {
-  }
-
-  @EventHandler
-  public void postinit(FMLPostInitializationEvent event)
-  {
-  }
-
   public boolean isDevelopmentEnvironment() {
     return developmentEnvironment;
+  }
+
+  @EventHandler
+  public void init(FMLInitializationEvent event) {
+  }
+
+  @EventHandler
+  public void postinit(FMLPostInitializationEvent event) {
   }
 
 }

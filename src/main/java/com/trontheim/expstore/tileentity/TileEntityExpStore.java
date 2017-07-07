@@ -14,51 +14,6 @@ public class TileEntityExpStore extends TileEntity {
 
   private ExperienceStorage experienceStorage = new ExperienceStorage();
 
-  private static class ExperienceStorage {
-    private HashMap<UUID, Integer> experience = new HashMap<UUID, Integer>();
-
-    private boolean addExperiencePoints(EntityPlayer player, Integer amount) {
-      if(!experience.containsKey(player.getUniqueID())) {
-        experience.put(player.getUniqueID(), 0);
-      }
-
-      // get current stored experience
-      Integer currentAmount = experience.get(player.getUniqueID());
-
-      // check max integer value to avoid exceptions
-      int maxAmount = Integer.MAX_VALUE - currentAmount;
-      if (amount > maxAmount) {
-        amount = maxAmount;
-      }
-
-      // check min integer value to avoid exceptions
-      int minAmount = Integer.MIN_VALUE + currentAmount;
-      if (amount < minAmount) {
-        amount = minAmount;
-      }
-
-      // change experience
-      currentAmount += amount;
-
-      // check if stored experience lesser than zero and set it to null
-      if(currentAmount < 0) {
-        currentAmount = 0;
-      }
-
-      experience.put(player.getUniqueID(), currentAmount);
-
-      return true;
-    }
-
-    private Integer getExperiencePoints(EntityPlayer player) {
-      if(!experience.containsKey(player.getUniqueID())) {
-        experience.put(player.getUniqueID(), 0);
-      }
-
-      return experience.get(player.getUniqueID());
-    }
-  }
-
   @Override
   public void readFromNBT(NBTTagCompound compound) {
     super.readFromNBT(compound);
@@ -75,7 +30,7 @@ public class TileEntityExpStore extends TileEntity {
   }
 
   public boolean storeExperiencePoints(EntityPlayer player) {
-    if (0 == player.experienceTotal) {
+    if(0 == player.experienceTotal) {
       return false;
     }
 
@@ -116,6 +71,52 @@ public class TileEntityExpStore extends TileEntity {
 
   public Integer getSoredExperiencePoints(EntityPlayer player) {
     return experienceStorage.getExperiencePoints(player);
+  }
+
+  private static class ExperienceStorage {
+
+    private HashMap<UUID, Integer> experience = new HashMap<UUID, Integer>();
+
+    private boolean addExperiencePoints(EntityPlayer player, Integer amount) {
+      if(!experience.containsKey(player.getUniqueID())) {
+        experience.put(player.getUniqueID(), 0);
+      }
+
+      // get current stored experience
+      Integer currentAmount = experience.get(player.getUniqueID());
+
+      // check max integer value to avoid exceptions
+      int maxAmount = Integer.MAX_VALUE - currentAmount;
+      if(amount > maxAmount) {
+        amount = maxAmount;
+      }
+
+      // check min integer value to avoid exceptions
+      int minAmount = Integer.MIN_VALUE + currentAmount;
+      if(amount < minAmount) {
+        amount = minAmount;
+      }
+
+      // change experience
+      currentAmount += amount;
+
+      // check if stored experience lesser than zero and set it to null
+      if(currentAmount < 0) {
+        currentAmount = 0;
+      }
+
+      experience.put(player.getUniqueID(), currentAmount);
+
+      return true;
+    }
+
+    private Integer getExperiencePoints(EntityPlayer player) {
+      if(!experience.containsKey(player.getUniqueID())) {
+        experience.put(player.getUniqueID(), 0);
+      }
+
+      return experience.get(player.getUniqueID());
+    }
   }
 
 }

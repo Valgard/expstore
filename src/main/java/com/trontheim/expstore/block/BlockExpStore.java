@@ -24,6 +24,7 @@ import java.util.List;
 
 public class BlockExpStore extends BlockContainer {
 
+  private static final Logger logger = LogManager.getLogger(ExperienceStore.MODID);
   @SideOnly(Side.CLIENT)
   private IIcon blockIconSouth;
   @SideOnly(Side.CLIENT)
@@ -34,8 +35,6 @@ public class BlockExpStore extends BlockContainer {
   private IIcon blockIconTop;
   @SideOnly(Side.CLIENT)
   private IIcon blockIconBottom;
-
-  private static final Logger logger = LogManager.getLogger(ExperienceStore.MODID);
 
   public BlockExpStore() {
     super(Material.iron);
@@ -48,34 +47,14 @@ public class BlockExpStore extends BlockContainer {
     setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
   }
 
-  @SideOnly(Side.CLIENT)
-  public void registerBlockIcons(IIconRegister iconRegister) {
-    blockIcon = iconRegister.registerIcon(getTextureName() + "_north");
-    blockIconSouth = iconRegister.registerIcon(getTextureName() + "_south");
-    blockIconEast = iconRegister.registerIcon(getTextureName() + "_east");
-    blockIconWest = iconRegister.registerIcon(getTextureName() + "_west");
-    blockIconTop = iconRegister.registerIcon(getTextureName() + "_top");
-    blockIconBottom = iconRegister.registerIcon(getTextureName() + "_bottom");
+  @Override
+  public boolean renderAsNormalBlock() {
+    return false;
   }
 
   @Override
   public int getRenderType() {
     return RenderBlockExpStore.instance().getRenderId();
-  }
-
-  @SideOnly(Side.CLIENT)
-  public String getItemIconName() {
-    return getTextureName();
-  }
-
-  @Override
-  public boolean isOpaqueCube() {
-    return false;
-  }
-
-  @Override
-  public boolean renderAsNormalBlock() {
-    return false;
   }
 
   @SideOnly(Side.CLIENT)
@@ -87,7 +66,7 @@ public class BlockExpStore extends BlockContainer {
   public IIcon getIcon(int side, int meta) {
     String result = "";
 
-    switch (side) {
+    switch(side) {
       case 0:
         result = "bottom";
         break;
@@ -123,31 +102,17 @@ public class BlockExpStore extends BlockContainer {
 
     if(icon.equals("south")) {
       result = blockIconSouth;
-    }
-    else if(icon.equals("east")) {
+    } else if(icon.equals("east")) {
       result = blockIconEast;
-    }
-    else if(icon.equals("west")) {
+    } else if(icon.equals("west")) {
       result = blockIconWest;
-    }
-    else if(icon.equals("top")) {
+    } else if(icon.equals("top")) {
       result = blockIconTop;
-    }
-    else if(icon.equals("bottom")) {
+    } else if(icon.equals("bottom")) {
       result = blockIconBottom;
     }
 
     return result;
-  }
-
-  @Override
-  public TileEntity createNewTileEntity(World world, int metadata) {
-    return new TileEntityExpStore();
-  }
-
-  @Override
-  public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
-    setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
   }
 
   @Override
@@ -169,25 +134,9 @@ public class BlockExpStore extends BlockContainer {
     // setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
   }
 
-  public TileEntityExpStore getTileEntity(IBlockAccess world, int x, int y, int z) {
-    return getTileEntity((World) world, x, y ,z);
-  }
-
-  private TileEntityExpStore getTileEntity(World world, int x, int y, int z) {
-    // gets tile entity from the location
-    TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-    // check for the right TileEntity class
-    if(!(tileEntity instanceof TileEntityExpStore)) {
-      return null;
-    }
-
-    return (TileEntityExpStore) tileEntity;
-  }
-
-  private void setTileEntity(World world, int x, int y, int z, TileEntityExpStore tileEntityExpStore) {
-    // sets the tile entity at the location
-    world.setTileEntity(x, y, z, tileEntityExpStore);
+  @Override
+  public boolean isOpaqueCube() {
+    return false;
   }
 
   @Override
@@ -196,7 +145,7 @@ public class BlockExpStore extends BlockContainer {
       return false;
     }
 
-    TileEntityExpStore tileEntityExpStore = getTileEntity(world, x, y ,z);
+    TileEntityExpStore tileEntityExpStore = getTileEntity(world, x, y, z);
 
     if(tileEntityExpStore == null) {
       return false;
@@ -219,7 +168,7 @@ public class BlockExpStore extends BlockContainer {
       return;
     }
 
-    TileEntityExpStore tileEntityExpStore = getTileEntity(world, x, y ,z);
+    TileEntityExpStore tileEntityExpStore = getTileEntity(world, x, y, z);
 
     if(tileEntityExpStore == null) {
       return;
@@ -234,6 +183,52 @@ public class BlockExpStore extends BlockContainer {
 
     // sets the tile entity at the location
     setTileEntity(world, x, y, z, tileEntityExpStore);
+  }
+
+  @Override
+  public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+    setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
+  }
+
+  @SideOnly(Side.CLIENT)
+  public void registerBlockIcons(IIconRegister iconRegister) {
+    blockIcon = iconRegister.registerIcon(getTextureName() + "_north");
+    blockIconSouth = iconRegister.registerIcon(getTextureName() + "_south");
+    blockIconEast = iconRegister.registerIcon(getTextureName() + "_east");
+    blockIconWest = iconRegister.registerIcon(getTextureName() + "_west");
+    blockIconTop = iconRegister.registerIcon(getTextureName() + "_top");
+    blockIconBottom = iconRegister.registerIcon(getTextureName() + "_bottom");
+  }
+
+  @SideOnly(Side.CLIENT)
+  public String getItemIconName() {
+    return getTextureName();
+  }
+
+  private TileEntityExpStore getTileEntity(World world, int x, int y, int z) {
+    // gets tile entity from the location
+    TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+    // check for the right TileEntity class
+    if(!(tileEntity instanceof TileEntityExpStore)) {
+      return null;
+    }
+
+    return (TileEntityExpStore) tileEntity;
+  }
+
+  private void setTileEntity(World world, int x, int y, int z, TileEntityExpStore tileEntityExpStore) {
+    // sets the tile entity at the location
+    world.setTileEntity(x, y, z, tileEntityExpStore);
+  }
+
+  @Override
+  public TileEntity createNewTileEntity(World world, int metadata) {
+    return new TileEntityExpStore();
+  }
+
+  public TileEntityExpStore getTileEntity(IBlockAccess world, int x, int y, int z) {
+    return getTileEntity((World) world, x, y, z);
   }
 
 }
