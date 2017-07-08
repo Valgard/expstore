@@ -151,7 +151,7 @@ public class BlockExpStore extends BlockContainer {
     // sets the tile entity at the location
     setTileEntity(world, x, y, z, tileEntityExpStore);
 
-    return true;
+    return false;
   }
 
   @Override
