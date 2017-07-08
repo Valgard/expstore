@@ -23,7 +23,7 @@ public class BlockExpChanger extends Block {
     super(Material.rock);
     setBlockName(ExperienceStore.MODID + "." + NAME);
     setBlockTextureName(ExperienceStore.MODID + ":" + NAME);
-    setCreativeTab(CreativeTabs.tabBlock);
+    setCreativeTab(CreativeTabs.tabMisc);
     setHardness(3F);
     setResistance(8F);
     setLightLevel(0.5F);

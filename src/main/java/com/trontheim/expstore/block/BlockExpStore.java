@@ -41,7 +41,7 @@ public class BlockExpStore extends BlockContainer {
 
   public BlockExpStore() {
     super(Material.iron);
-    setCreativeTab(CreativeTabs.tabBlock);
+    setCreativeTab(CreativeTabs.tabMisc);
     setBlockName(ExperienceStore.MODID + "." + NAME);
     setBlockTextureName(ExperienceStore.MODID + ":" + NAME);
     setHardness(3F);
