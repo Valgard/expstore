@@ -55,9 +55,8 @@ public class BlockExpChanger extends Block {
       player.addChatComponentMessage(new ChatComponentText("experience points reseted"));
     }
 
-    return true;
+    return false;
   }
-
 
   @Override
   public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
