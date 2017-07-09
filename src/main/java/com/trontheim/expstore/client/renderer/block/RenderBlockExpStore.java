@@ -50,6 +50,8 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     // ********************************************************************************
 
     if(isItem) {
+      tessellator.startDrawingQuads();
+      tessellator.draw();
     }
     else {
       setColor(renderer.blockAccess, x, y, z, block);
