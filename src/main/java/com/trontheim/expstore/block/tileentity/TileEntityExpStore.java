@@ -1,4 +1,4 @@
-package com.trontheim.expstore.tileentity;
+package com.trontheim.expstore.block.tileentity;
 
 import com.google.gson.Gson;
 import com.trontheim.expstore.ExperienceStore;

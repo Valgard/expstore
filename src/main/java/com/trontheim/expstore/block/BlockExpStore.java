@@ -2,7 +2,7 @@ package com.trontheim.expstore.block;
 
 import com.trontheim.expstore.ExperienceStore;
 import com.trontheim.expstore.client.renderer.block.RenderBlockExpStore;
-import com.trontheim.expstore.tileentity.TileEntityExpStore;
+import com.trontheim.expstore.block.tileentity.TileEntityExpStore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;

@@ -5,7 +5,7 @@ import com.trontheim.expstore.block.BlockExpChanger;
 import com.trontheim.expstore.block.BlockExpStore;
 import com.trontheim.expstore.block.itemblock.ItemBlockExpStore;
 import com.trontheim.expstore.client.renderer.block.RenderBlockExpStore;
-import com.trontheim.expstore.tileentity.TileEntityExpStore;
+import com.trontheim.expstore.block.tileentity.TileEntityExpStore;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
