@@ -23,7 +23,7 @@ public class ExperienceStore {
 
   public static final String MODID = "expstore";
   public static final String NAME = "Experience Store";
-  public static final String VERSION = "0.0.3-alpha";
+  public static final String VERSION = "0.0.4-alpha";
   public static final String MCVERSION = "[1.7.10]";
 
   private static final Logger logger = LogManager.getLogger(MODID);
