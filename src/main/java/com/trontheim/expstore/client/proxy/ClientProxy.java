@@ -1,6 +1,6 @@
 package com.trontheim.expstore.client.proxy;
 
-import com.trontheim.expstore.common.CommonProxy;
+import com.trontheim.expstore.common.proxy.CommonProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

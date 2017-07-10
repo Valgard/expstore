@@ -1,4 +1,4 @@
-package com.trontheim.expstore.common;
+package com.trontheim.expstore.common.proxy;
 
 import com.trontheim.expstore.init.ESBlocks;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
