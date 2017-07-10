@@ -4,18 +4,27 @@ import com.trontheim.expstore.block.BlockExpStore;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
+
+import static net.minecraftforge.client.IItemRenderer.ItemRenderType.INVENTORY;
 
 public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
 
   private static RenderBlockExpStore instance = new RenderBlockExpStore();
+
   private int width = 16;
+
   private float offsetX = 0;
   private float offsetY = 0;
   private float offsetZ = 0;
+
   private int renderId = RenderingRegistry.getNextAvailableRenderId();
 
   public static RenderBlockExpStore instance() {
@@ -32,7 +41,6 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
   }
 
   public boolean renderBlockMetadata(BlockExpStore block, int x, int y, int z, int metadata, boolean isItem, RenderBlocks renderer) {
-    Tessellator tessellator = Tessellator.instance;
 
     // ********************************************************************************
     //
@@ -50,10 +58,8 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     // ********************************************************************************
 
     if(isItem) {
-      tessellator.startDrawingQuads();
-      tessellator.draw();
-    }
-    else {
+      RenderManager.instance.itemRenderer.renderItem(Minecraft.getMinecraft().thePlayer, new ItemStack(Item.getItemFromBlock(block), 1, 0), 0, INVENTORY);
+    } else {
       setColor(renderer.blockAccess, x, y, z, block);
       setRenderOrigin(2, 0, 2);
       addRenderBox(renderer, 1, 1, 1, 10, 12, 10);
@@ -152,10 +158,6 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
     return renderWorldBlock(world, x, y, z, (BlockExpStore) block, modelId, renderer);
   }
 
-  public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, BlockExpStore block, int modelId, RenderBlocks renderer) {
-    return renderBlockMetadata(block, x, y, z, world.getBlockMetadata(x, y, z), false, renderer);
-  }
-
   @Override
   public boolean shouldRender3DInInventory(int modelId) {
     return false;
@@ -164,6 +166,10 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
   @Override
   public int getRenderId() {
     return renderId;
+  }
+
+  public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, BlockExpStore block, int modelId, RenderBlocks renderer) {
+    return renderBlockMetadata(block, x, y, z, world.getBlockMetadata(x, y, z), false, renderer);
   }
 
   public void setWidth(int width) {
