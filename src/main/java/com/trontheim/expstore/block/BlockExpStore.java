@@ -24,6 +24,8 @@ import java.util.List;
 
 public class BlockExpStore extends BlockContainer {
 
+  public static final String NAME = "expstore";
+
   private static final Logger logger = LogManager.getLogger(ExperienceStore.MODID);
 
   @SideOnly(Side.CLIENT)
@@ -36,8 +38,6 @@ public class BlockExpStore extends BlockContainer {
   private IIcon blockIconTop;
   @SideOnly(Side.CLIENT)
   private IIcon blockIconBottom;
-
-  public static final String NAME = "expstore";
 
   public BlockExpStore() {
     super(Material.iron);
