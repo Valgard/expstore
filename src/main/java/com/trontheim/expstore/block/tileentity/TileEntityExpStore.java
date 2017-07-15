@@ -34,10 +34,6 @@ public class TileEntityExpStore extends TileEntity {
       return false;
     }
 
-    // if(player.capabilities.isCreativeMode) {
-    //   return false;
-    // }
-
     Integer amount = player.experienceTotal;
 
     if(!experienceStorage.addExperiencePoints(player, amount)) {

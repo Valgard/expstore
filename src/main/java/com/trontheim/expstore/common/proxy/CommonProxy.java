@@ -8,8 +8,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 abstract public class CommonProxy {
 
   public void preInit(FMLPreInitializationEvent event) {
-
-    ESBlocks.register();
+    ESBlocks.registerTileEntities();
+    ESBlocks.registerRecipes();
   }
 
   public void init(FMLInitializationEvent event) {

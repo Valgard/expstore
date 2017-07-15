@@ -22,17 +22,12 @@ public class ESBlocks {
 
   private static final boolean developmentEnvironment = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
-  public static void register() {
-    registerTileEntities();
-    registerRecipes();
-  }
-
-  private static void registerTileEntities() {
+  public static void registerTileEntities() {
     TileEntity.addMapping(TileEntityExpStore.class, ExperienceStore.MODID + ":TileEntityExpStore");
     RenderingRegistry.registerBlockHandler(RenderBlockExpStore.instance());
   }
 
-  private static void registerRecipes() {
+  public static void registerRecipes() {
     GameRegistry.addRecipe(new ItemStack(ESBlocks.expStore), "ogo", "gGg", "ogo", 'o', Blocks.obsidian, 'g', Items.gold_ingot, 'G', Blocks.glass);
 
     if(isDevelopmentEnvironment()) {
