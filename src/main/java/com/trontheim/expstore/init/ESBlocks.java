@@ -24,7 +24,6 @@ public class ESBlocks {
 
   public static void registerTileEntities() {
     TileEntity.addMapping(TileEntityExpStore.class, ExperienceStore.MODID + ":TileEntityExpStore");
-    RenderingRegistry.registerBlockHandler(RenderBlockExpStore.instance());
   }
 
   public static void registerRecipes() {
@@ -33,6 +32,10 @@ public class ESBlocks {
     if(isDevelopmentEnvironment()) {
       GameRegistry.addRecipe(new ItemStack(ESBlocks.expChanger), "ogo", "gGg", "ogo", 'o', Blocks.obsidian, 'g', Blocks.gold_block, 'G', Blocks.glass);
     }
+  }
+
+  public static void registerBlockRenderer() {
+    RenderingRegistry.registerBlockHandler(RenderBlockExpStore.instance());
   }
 
   private static boolean isDevelopmentEnvironment() {
