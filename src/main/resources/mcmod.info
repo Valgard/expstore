@@ -9,13 +9,12 @@
   "authorList": [
     "Valgard Trontheim (a.k.a Sven Pöche)"
   ],
-  "credits": "",
-  "url": "http://minecraft.valgard-lp.de/mods/expstore/",
+  "credits": "Thanks to _Bedrock_Miner_ for his amazing tutorials which helps me a lot to develop this mod.",
   "logoFile": "logo.png",
   "screenshots": [
   ],
   "parent":"",
-  "requiredMods": [ 
+  "requiredMods": [
     "Forge"
   ],
   "dependencies": [
