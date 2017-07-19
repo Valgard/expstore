@@ -2,6 +2,7 @@ package com.trontheim.expstore.block.tileentity;
 
 import com.google.gson.Gson;
 import com.trontheim.expstore.ExperienceStore;
+import com.trontheim.expstore.init.ESBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -53,6 +54,15 @@ public class TileEntityExpStore extends TileEntity {
     return true;
   }
 
+  public boolean resetStore(EntityPlayer player) {
+
+    experienceStorage.reset();
+
+    player.addChatComponentMessage(new ChatComponentText("all stored experience points deleted."));
+
+    return true;
+  }
+
   public Integer getSoredExperiencePoints(EntityPlayer player) {
     return experienceStorage.getExperiencePoints(player);
   }
@@ -73,29 +83,52 @@ public class TileEntityExpStore extends TileEntity {
   @Override
   public void readFromNBT(NBTTagCompound compound) {
     super.readFromNBT(compound);
-    experienceStorage = new Gson().fromJson(compound.getString(ExperienceStore.MODID + ":TileEntityExpStore"), ExperienceStorage.class);
-    if(experienceStorage == null) {
-      experienceStorage = new ExperienceStorage();
+
+    NBTTagCompound data = compound.getCompoundTag(ExperienceStore.MODID + ":storage");
+
+    // convert old experience json string to nbt tag compound
+    if(compound.hasKey(ExperienceStore.MODID + ":TileEntityExpStore")) {
+      ExperienceStorage oldData = new Gson().fromJson(compound.getString(ExperienceStore.MODID + ":TileEntityExpStore"), ExperienceStorage.class);
+      data = oldData.exportData();
     }
+
+    experienceStorage.importData(data);
   }
 
   @Override
   public void writeToNBT(NBTTagCompound compound) {
     super.writeToNBT(compound);
-    compound.setString(ExperienceStore.MODID + ":TileEntityExpStore", new Gson().toJson(experienceStorage));
+    compound.setTag(ExperienceStore.MODID + ":storage", experienceStorage.exportData());
+
+    // remove old experience json string
+    if(compound.hasKey(ExperienceStore.MODID + ":TileEntityExpStore")) {
+      compound.removeTag(ExperienceStore.MODID + ":TileEntityExpStore");
+    }
   }
 
   private static class ExperienceStorage {
 
-    private HashMap<UUID, Integer> experience = new HashMap<UUID, Integer>();
+    private HashMap<String, Integer> experience = new HashMap<String, Integer>();
+
+    private boolean reset() {
+      experience = new HashMap<String, Integer>();
+
+      return true;
+    }
+
+    private String getUUID(EntityPlayer player) {
+      return ESBlocks.isDevelopmentEnvironment() ? "DEVPLAYER" : player.getUniqueID().toString();
+    }
 
     private boolean addExperiencePoints(EntityPlayer player, Integer amount) {
-      if(!experience.containsKey(player.getUniqueID())) {
-        experience.put(player.getUniqueID(), 0);
+      String uuid = getUUID(player);
+
+      if(!experience.containsKey(uuid)) {
+        experience.put(uuid, 0);
       }
 
       // get current stored experience
-      Integer currentAmount = experience.get(player.getUniqueID());
+      Integer currentAmount = experience.get(uuid);
 
       // check max integer value to avoid exceptions
       int maxAmount = Integer.MAX_VALUE - currentAmount;
@@ -117,17 +150,31 @@ public class TileEntityExpStore extends TileEntity {
         currentAmount = 0;
       }
 
-      experience.put(player.getUniqueID(), currentAmount);
+      experience.put(uuid, currentAmount);
 
       return true;
     }
 
     private Integer getExperiencePoints(EntityPlayer player) {
-      if(!experience.containsKey(player.getUniqueID())) {
-        experience.put(player.getUniqueID(), 0);
+      String uuid = getUUID(player);
+
+      return experience.containsKey(uuid) ? experience.get(uuid) : 0;
+    }
+
+    private NBTTagCompound exportData() {
+      NBTTagCompound data = new NBTTagCompound();
+      for(HashMap.Entry<String, Integer> entry: experience.entrySet()) {
+        data.setInteger(entry.getKey(), entry.getValue());
       }
 
-      return experience.get(player.getUniqueID());
+      return data;
+    }
+
+    private void importData(NBTTagCompound data) {
+      reset();
+      for(Object key: data.func_150296_c()) {
+        experience.put(key.toString(), data.getInteger(key.toString()));
+      }
     }
 
   }

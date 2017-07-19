@@ -1,3 +1,8 @@
 < de_DE.lang - German localization file >
 tile.expstore.expstore.name=Erfahrungsspeicher
+
+tile.expstore.expstore.gui.heading=Erfahrungsspeicher
+tile.expstore.expstore.gui.player=Spieler
+tile.expstore.expstore.gui.store=Speicher
+
 tile.expstore.expchanger.name=Erfahrungsänderer (nur in DEV)

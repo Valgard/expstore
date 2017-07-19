@@ -27,6 +27,9 @@ public class RenderBlockExpStore implements ISimpleBlockRenderingHandler {
 
   private int renderId = RenderingRegistry.getNextAvailableRenderId();
 
+  private RenderBlockExpStore() {
+  }
+
   public static RenderBlockExpStore instance() {
     return instance;
   }

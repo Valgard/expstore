@@ -3,24 +3,25 @@ package com.trontheim.expstore.block;
 import com.trontheim.expstore.ExperienceStore;
 import com.trontheim.expstore.client.renderer.block.RenderBlockExpStore;
 import com.trontheim.expstore.block.tileentity.TileEntityExpStore;
+import com.trontheim.expstore.init.ESBlocks;
+import com.trontheim.expstore.network.packet.OpenGuiMessage;
+import com.trontheim.expstore.network.PacketHandler;
+import com.trontheim.expstore.network.packet.ResetExperienceStoreMessage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
+import static com.trontheim.expstore.common.gui.GuiHandlerExpStore.Gui.STORE;
 
 public class BlockExpStore extends BlockContainer {
 
@@ -121,67 +122,26 @@ public class BlockExpStore extends BlockContainer {
   }
 
   @Override
-  public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List list, Entity entity) {
-    setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
-    super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
-  }
-
-  @Override
   public boolean isOpaqueCube() {
     return false;
   }
 
   @Override
   public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-    if(world.isRemote) {
-      return false;
+    if(!world.isRemote) { // CLIENT: open gui from server, server open client gui
+      if(!player.isSneaking()) {
+        PacketHandler.sendToServer(new OpenGuiMessage(STORE.ordinal(), x, y, z));
+      } else {
+        if(ESBlocks.isDevelopmentEnvironment()) {
+          PacketHandler.sendToServer(new ResetExperienceStoreMessage(x, y, z));
+        }
+      }
     }
-
-    TileEntityExpStore tileEntityExpStore = getTileEntity(world, x, y, z);
-
-    if(tileEntityExpStore == null) {
-      return false;
-    }
-
-    // change something
-    if(player.isSneaking()) {
-      tileEntityExpStore.restoreExperiencePoints(player);
-    }
-
-    // sets the tile entity at the location
-    setTileEntity(world, x, y, z, tileEntityExpStore);
 
     return false;
   }
 
   @Override
-  public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
-    if(world.isRemote) {
-      return;
-    }
-
-    TileEntityExpStore tileEntityExpStore = getTileEntity(world, x, y, z);
-
-    if(tileEntityExpStore == null) {
-      return;
-    }
-
-    // change something
-    if(player.isSneaking()) {
-      tileEntityExpStore.storeExperiencePoints(player);
-    } else {
-      player.addChatComponentMessage(new ChatComponentText("stored experience points: " + tileEntityExpStore.getSoredExperiencePoints(player).toString()));
-    }
-
-    // sets the tile entity at the location
-    setTileEntity(world, x, y, z, tileEntityExpStore);
-  }
-
-  @Override
-  public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
-    setBlockBounds(0.125F, 0, 0.125F, 0.875F, 1F, 0.875F);
-  }
-
   @SideOnly(Side.CLIENT)
   public void registerBlockIcons(IIconRegister iconRegister) {
     blockIcon = iconRegister.registerIcon(getTextureName() + "_north");
@@ -192,35 +152,15 @@ public class BlockExpStore extends BlockContainer {
     blockIconBottom = iconRegister.registerIcon(getTextureName() + "_bottom");
   }
 
+  @Override
   @SideOnly(Side.CLIENT)
   public String getItemIconName() {
     return getTextureName();
   }
 
-  private TileEntityExpStore getTileEntity(World world, int x, int y, int z) {
-    // gets tile entity from the location
-    TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-    // check for the right TileEntity class
-    if(!(tileEntity instanceof TileEntityExpStore)) {
-      return null;
-    }
-
-    return (TileEntityExpStore) tileEntity;
-  }
-
-  private void setTileEntity(World world, int x, int y, int z, TileEntityExpStore tileEntityExpStore) {
-    // sets the tile entity at the location
-    world.setTileEntity(x, y, z, tileEntityExpStore);
-  }
-
   @Override
   public TileEntity createNewTileEntity(World world, int metadata) {
     return new TileEntityExpStore();
-  }
-
-  public TileEntityExpStore getTileEntity(IBlockAccess world, int x, int y, int z) {
-    return getTileEntity((World) world, x, y, z);
   }
 
 }
