@@ -128,7 +128,7 @@ public class BlockExpStore extends BlockContainer {
 
   @Override
   public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-    if(!world.isRemote) { // CLIENT: open gui from server, server open client gui
+    if(world.isRemote) { // CLIENT: open gui from server, server open client gui
       if(!player.isSneaking()) {
         PacketHandler.sendToServer(new OpenGuiMessage(STORE.ordinal(), x, y, z));
       } else {
