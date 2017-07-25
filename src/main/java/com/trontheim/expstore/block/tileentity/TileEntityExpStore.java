@@ -12,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 public class TileEntityExpStore extends TileEntity {
 
@@ -31,7 +30,9 @@ public class TileEntityExpStore extends TileEntity {
 
     player.addExperienceLevel(-(player.experienceLevel + 1));
 
-    player.addChatComponentMessage(new ChatComponentText("experience points stored: " + amount.toString()));
+    if(!this.worldObj.isRemote) {
+      player.addChatComponentMessage(new ChatComponentText("experience points stored: " + ((Integer) amount).toString()));
+    }
 
     return true;
   }
@@ -49,7 +50,9 @@ public class TileEntityExpStore extends TileEntity {
 
     player.addExperience(amount);
 
-    player.addChatComponentMessage(new ChatComponentText("experience points restored: " + amount.toString()));
+    if(!this.worldObj.isRemote) {
+      player.addChatComponentMessage(new ChatComponentText("experience points restored: " + ((Integer) amount).toString()));
+    }
 
     return true;
   }
