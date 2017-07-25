@@ -82,7 +82,7 @@ public class TileEntityExpStore extends TileEntity {
     return true;
   }
 
-  public Integer getSoredExperiencePoints(EntityPlayer player) {
+  public Integer getStoredExperiencePoints(EntityPlayer player) {
     return experienceStorage.getExperiencePoints(player);
   }
 

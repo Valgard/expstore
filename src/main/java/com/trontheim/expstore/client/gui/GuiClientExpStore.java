@@ -19,8 +19,8 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
 
-import static com.trontheim.expstore.network.packet.ExperienceMessage.MODE.RESTORE;
 import static com.trontheim.expstore.network.packet.ExperienceMessage.MODE.STORE;
+import static com.trontheim.expstore.network.packet.ExperienceMessage.MODE.RESTORE;
 
 public class GuiClientExpStore extends GuiScreen {
 
@@ -38,7 +38,7 @@ public class GuiClientExpStore extends GuiScreen {
   /**
    * The Y size of the gui window in pixels.
    */
-  private int ySize = 210;
+  private int ySize = 190;
   /**
    * Starting X position for the Gui. Inconsistent use for Gui backgrounds.
    */
@@ -55,8 +55,8 @@ public class GuiClientExpStore extends GuiScreen {
   private UpDownButton[] buttonsInc = new UpDownButton[digits];
   private UpDownButton[] buttonsDec = new UpDownButton[digits];
 
-  private GuiButton buttonStore;
-  private GuiButton buttonRestore;
+  private UpDownButton buttonDirection;
+  private UpDownButton buttonExecute;
 
   public GuiClientExpStore(EntityPlayer player, World world, int x, int y, int z) {
     this.player = player;
@@ -93,13 +93,19 @@ public class GuiClientExpStore extends GuiScreen {
   }
 
   protected void drawGuiForegroundLayer(int mouseX, int mouseY) {
-    Experience experienceStore = new Experience(tileEntity.getSoredExperiencePoints(player));
+    Experience experienceStore = new Experience(tileEntity.getStoredExperiencePoints(player));
     Experience experiencePlayer = new Experience(player.experienceTotal);
 
     // render logo
     GL11.glPushMatrix();
     mc.getTextureManager().bindTexture(widgetsLocation);
     drawTexturedModalRect(5, 5, 10, 0, 32, 32);
+    GL11.glPopMatrix();
+
+    // render direction gui element
+    GL11.glPushMatrix();
+    mc.getTextureManager().bindTexture(widgetsLocation);
+    drawTexturedModalRect(193, 77, 43, 0, 37, 66);
     GL11.glPopMatrix();
 
     // render heading
@@ -111,7 +117,7 @@ public class GuiClientExpStore extends GuiScreen {
 
 
     // show player xp points
-    top = 45;
+    top = 55;
     GL11.glPushMatrix();
     fontRendererObj.drawString(I18n.format("tile.expstore.expstore.gui.player") + ": " + StringUtils.leftPad(experiencePlayer.experienceTotal.toString(), digits, " "), 10, top, 4210752);
     GL11.glPopMatrix();
@@ -189,11 +195,16 @@ public class GuiClientExpStore extends GuiScreen {
 
   @Override
   protected void actionPerformed(GuiButton button) {
-    if(button.id == buttonStore.id) {
-      PacketHandler.sendToServer(new ExperienceMessage(STORE, tileEntity, player.experienceTotal));
+    if(button.id == buttonExecute.id) {
+      if(buttonDirection.getDown()) {
+        PacketHandler.sendToServer(new ExperienceMessage(STORE, tileEntity, amount));
+      } else {
+        PacketHandler.sendToServer(new ExperienceMessage(RESTORE, tileEntity, amount));
+      }
     }
-    if(button.id == buttonRestore.id) {
-      PacketHandler.sendToServer(new ExperienceMessage(RESTORE, tileEntity, tileEntity.getSoredExperiencePoints(player)));
+
+    if(button.id == buttonDirection.id) {
+      buttonDirection.setDown(!buttonDirection.getDown());
     }
 
     for(int index = digits - 1; index >= 0; index--) {
@@ -204,6 +215,11 @@ public class GuiClientExpStore extends GuiScreen {
         amount-= Math.pow(10, index);
       }
     }
+
+    int maxAmount = buttonDirection.getDown() ? player.experienceTotal : tileEntity.getStoredExperiencePoints(player);
+    if(maxAmount < amount) {
+      amount = maxAmount;
+    }
   }
 
   @Override
@@ -212,32 +228,34 @@ public class GuiClientExpStore extends GuiScreen {
   }
 
   private void updateButtons() {
-    int storeExperienceTotal = tileEntity.getSoredExperiencePoints(player);
-
-    buttonStore.enabled = true;
-    buttonRestore.enabled = true;
-
     String sAmount = StringUtils.leftPad(((Integer) amount).toString(), digits, '0');
 
+    buttonExecute.enabled = false;
+    if(amount > 0) {
+      buttonExecute.enabled = true;
+    }
+
+    int iMaxAmount = buttonDirection.getDown() ? player.experienceTotal : tileEntity.getStoredExperiencePoints(player);
+    String sMaxAccount = StringUtils.leftPad(((Integer) iMaxAmount).toString(), digits, '0');
+
+    if(iMaxAmount < amount) {
+      amount = iMaxAmount;
+    }
+    boolean enabled = false;
     for(int index = digits - 1; index >= 0; index--) {
       buttonsInc[index].enabled = false;
       buttonsDec[index].enabled = false;
 
-      int iDigit = Character.getNumericValue(sAmount.charAt(digits - index - 1));
-      if(iDigit < 9) {
-        buttonsInc[index].enabled = true;
+      if(Character.getNumericValue(sMaxAccount.charAt(digits - index - 1)) > 0 || enabled) {
+        enabled = true;
+        int iDigit = Character.getNumericValue(sAmount.charAt(digits - index - 1));
+        if(iDigit < 9) {
+          buttonsInc[index].enabled = true;
+        }
+        if(iDigit > 0) {
+          buttonsDec[index].enabled = true;
+        }
       }
-      if(iDigit > 0) {
-        buttonsDec[index].enabled = true;
-      }
-    }
-
-    if(player.experienceTotal == 0) {
-      buttonStore.enabled = false;
-    }
-
-    if(storeExperienceTotal == 0) {
-      buttonRestore.enabled = false;
     }
   }
 
@@ -246,15 +264,21 @@ public class GuiClientExpStore extends GuiScreen {
     guiLeft = (width - xSize) / 2;
     guiTop = (height - ySize) / 2;
 
-    int x = guiLeft + 10;
-    int y = guiTop + ySize - 30;
-    buttonList.add(buttonStore = new GuiButton(0, x, y, xSize / 2 - 20, 20, I18n.format("tile.expstore.expstore.gui.button.store")));
-    buttonList.add(buttonRestore = new GuiButton(1, x + (xSize / 2), y, xSize / 2 - 20, 20, I18n.format("tile.expstore.expstore.gui.button.restore")));
+    int x = guiLeft + 202;
+    int y = guiTop + (ySize / 2) + 10;
+    buttonList.add(buttonDirection = new UpDownButton(3, x, y, true));
+    buttonDirection.setUpCharacter("⬆");
+    buttonDirection.setDownCharacter("⬇");
+
+    x = guiLeft + 232;
+    y = guiTop + (ySize / 2) + 10;
+    buttonList.add(buttonExecute = new UpDownButton(4, x, y));
+    buttonExecute.setUpCharacter("▶");
 
     int xGab = 15;
     int yGab = 30;
     x = guiLeft + 182;
-    y = guiTop + 80;
+    y = guiTop + 90;
     for(int index = digits - 1; index >= 0; index--) {
       buttonList.add(buttonsInc[index] = new UpDownButton(10 + index, x - (index * xGab), y));
       buttonList.add(buttonsDec[index] = new UpDownButton(20 + index, x - (index * xGab), y + yGab, true));
@@ -270,7 +294,10 @@ public class GuiClientExpStore extends GuiScreen {
 
   static class UpDownButton extends GuiButton {
 
-    private final boolean down;
+    private boolean down;
+
+    private String upChar = "▲";
+    private String downChar = "▼";
 
     public UpDownButton(int id, int x, int y) {
       this(id, x, y, false);
@@ -283,38 +310,54 @@ public class GuiClientExpStore extends GuiScreen {
       this.height = 10;
     }
 
+    public void setDown(boolean down) {
+      this.down = down;
+    }
+
+    public boolean getDown() {
+      return down;
+    }
+
+    public void setUpCharacter(String chr) {
+      upChar = chr;
+    }
+
+    public void setDownCharacter(String chr) {
+      downChar = chr;
+    }
+
     /**
      * Draws this button to the screen.
      */
     public void drawButton(Minecraft minecraft, int x, int y) {
-      if (this.visible) {
+      if (visible) {
         FontRenderer fontrenderer = minecraft.fontRenderer;
         minecraft.getTextureManager().bindTexture(GuiClientExpStore.widgetsLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
-        int hoverState = this.getHoverState(this.field_146123_n);
+        field_146123_n = x >= xPosition && y >= yPosition && x < xPosition + width && y < yPosition + height;
+        int hoverState = getHoverState(field_146123_n);
         GL11.glEnable(GL11.GL_BLEND);
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, hoverState * 10, this.width / 2, this.height);
-        this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 10 - this.width / 2, hoverState * 10, this.width / 2, this.height);
-        this.mouseDragged(minecraft, x, y);
+        drawTexturedModalRect(xPosition, yPosition, 0, hoverState * 10, width / 2, height);
+        drawTexturedModalRect(xPosition + width / 2, yPosition, 10 - width / 2, hoverState * 10, width / 2, height);
+        mouseDragged(minecraft, x, y);
         int l = 14737632;
 
         if (packedFGColour != 0)
         {
           l = packedFGColour;
         }
-        else if (!this.enabled)
+        else if (!enabled)
         {
           l = 10526880;
         }
-        else if (this.field_146123_n)
+        else if (field_146123_n)
         {
           l = 16777120;
         }
 
-        this.drawCenteredString(fontrenderer, !this.down ? "▲" : "▼", this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, l);
+        drawCenteredString(fontrenderer, !down ? upChar : downChar, xPosition + width / 2, yPosition + (height - 8) / 2, l);
       }
     }
   }
