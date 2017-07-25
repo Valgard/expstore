@@ -2,6 +2,7 @@ package com.trontheim.expstore.client.gui;
 
 import com.trontheim.expstore.ExperienceStore;
 import com.trontheim.expstore.block.tileentity.TileEntityExpStore;
+import com.trontheim.expstore.block.tileentity.TileEntityExpStore.Experience;
 import com.trontheim.expstore.network.PacketHandler;
 import com.trontheim.expstore.network.packet.ExperienceMessage;
 import net.minecraft.client.gui.Gui;
@@ -183,38 +184,6 @@ public class GuiClientExpStore extends GuiScreen {
   @Override
   public boolean doesGuiPauseGame() {
     return false;
-  }
-
-  protected class Experience {
-
-    Integer experienceTotal = 0;
-    Float experience = 0F;
-    Integer experienceLevel = 0;
-
-    Experience(int experience) {
-      setExperience(experience);
-    }
-
-    void setExperience(int experience) {
-      experienceTotal = experience;
-      calculate();
-    }
-
-    // copied from net.minecraft.entity.player.EntityPlayer(2094)
-    private void calculate() {
-      experience += (float) experienceTotal / (float) xpBarCap();
-
-      for(; experience >= 1.0F; experience /= (float) xpBarCap()) {
-        experience = (experience - 1.0F) * (float) xpBarCap();
-        experienceLevel++;
-      }
-    }
-
-    // copied from net.minecraft.entity.player.EntityPlayer(2131)
-    int xpBarCap() {
-      return experienceLevel >= 30 ? 62 + (experienceLevel - 30) * 7 : (experienceLevel >= 15 ? 17 + (experienceLevel - 15) * 3 : 17);
-    }
-
   }
 
 }

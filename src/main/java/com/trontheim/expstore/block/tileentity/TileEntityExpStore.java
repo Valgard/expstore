@@ -182,4 +182,35 @@ public class TileEntityExpStore extends TileEntity {
 
   }
 
+  public static class Experience {
+
+    public Integer experienceTotal = 0;
+    public Float experience = 0F;
+    public Integer experienceLevel = 0;
+
+    public Experience(int experience) {
+      setExperience(experience);
+    }
+
+    public void setExperience(int experience) {
+      experienceTotal = experience;
+      calculate();
+    }
+
+    // copied from net.minecraft.entity.player.EntityPlayer(2094)
+    private void calculate() {
+      experience += (float) experienceTotal / (float) xpBarCap();
+
+      for(; experience >= 1.0F; experience /= (float) xpBarCap()) {
+        experience = (experience - 1.0F) * (float) xpBarCap();
+        experienceLevel++;
+      }
+    }
+
+    // copied from net.minecraft.entity.player.EntityPlayer(2131)
+    public int xpBarCap() {
+      return experienceLevel >= 30 ? 62 + (experienceLevel - 30) * 7 : (experienceLevel >= 15 ? 17 + (experienceLevel - 15) * 3 : 17);
+    }
+
+  }
 }
