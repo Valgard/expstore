@@ -5,4 +5,7 @@ tile.expstore.expstore.gui.heading=Erfahrungsspeicher
 tile.expstore.expstore.gui.player=Spieler
 tile.expstore.expstore.gui.store=Speicher
 
+tile.expstore.expstore.gui.button.store=Speichern
+tile.expstore.expstore.gui.button.restore=Wiederherstellen
+
 tile.expstore.expchanger.name=Erfahrungsänderer (nur in DEV)

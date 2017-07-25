@@ -5,4 +5,7 @@ tile.expstore.expstore.gui.heading=Experience Store
 tile.expstore.expstore.gui.player=Player
 tile.expstore.expstore.gui.store=Store
 
+tile.expstore.expstore.gui.button.store=Store
+tile.expstore.expstore.gui.button.restore=Restore
+
 tile.expstore.expchanger.name=Experience Changer (only in DEV)
