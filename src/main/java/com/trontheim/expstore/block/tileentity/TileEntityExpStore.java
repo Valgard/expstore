@@ -18,17 +18,25 @@ public class TileEntityExpStore extends TileEntity {
   private ExperienceStorage experienceStorage = new ExperienceStorage();
 
   public boolean storeExperiencePoints(EntityPlayer player) {
-    if(0 == player.experienceTotal) {
+    return storeExperiencePoints(player, player.experienceTotal);
+  }
+
+  public boolean storeExperiencePoints(EntityPlayer player, int amount) {
+    if(0 == amount) {
       return false;
     }
-
-    Integer amount = player.experienceTotal;
 
     if(!experienceStorage.addExperiencePoints(player, amount)) {
       return false;
     }
 
-    player.addExperienceLevel(-(player.experienceLevel + 1));
+    int currentExperienceLevel = player.experienceLevel;
+
+    player.addExperience(-amount);
+
+    if(currentExperienceLevel - player.experienceLevel > 0) {
+      player.addExperienceLevel(player.experienceLevel - currentExperienceLevel);
+    }
 
     if(!this.worldObj.isRemote) {
       player.addChatComponentMessage(new ChatComponentText("experience points stored: " + ((Integer) amount).toString()));
@@ -38,17 +46,25 @@ public class TileEntityExpStore extends TileEntity {
   }
 
   public boolean restoreExperiencePoints(EntityPlayer player) {
-    if(0 == experienceStorage.getExperiencePoints(player)) {
+    return restoreExperiencePoints(player, experienceStorage.getExperiencePoints(player));
+  }
+
+  public boolean restoreExperiencePoints(EntityPlayer player, int amount) {
+    if(0 == amount) {
       return false;
     }
-
-    Integer amount = experienceStorage.getExperiencePoints(player);
 
     if(!experienceStorage.addExperiencePoints(player, -amount)) {
       return false;
     }
 
+    int currentExperienceLevel = player.experienceLevel;
+
     player.addExperience(amount);
+
+    if(currentExperienceLevel - player.experienceLevel > 0) {
+      player.addExperienceLevel(player.experienceLevel - currentExperienceLevel);
+    }
 
     if(!this.worldObj.isRemote) {
       player.addChatComponentMessage(new ChatComponentText("experience points restored: " + ((Integer) amount).toString()));

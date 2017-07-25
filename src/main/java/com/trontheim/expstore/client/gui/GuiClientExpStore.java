@@ -149,10 +149,10 @@ public class GuiClientExpStore extends GuiScreen {
   @Override
   protected void actionPerformed(GuiButton button) {
     if(button.equals(buttonStore)) {
-      PacketHandler.sendToServer(new ExperienceMessage(STORE, tileEntity));
+      PacketHandler.sendToServer(new ExperienceMessage(STORE, tileEntity, player.experienceTotal));
     }
     if(button.equals(buttonRestore)) {
-      PacketHandler.sendToServer(new ExperienceMessage(RESTORE, tileEntity));
+      PacketHandler.sendToServer(new ExperienceMessage(RESTORE, tileEntity, tileEntity.getSoredExperiencePoints(player)));
     }
   }
 

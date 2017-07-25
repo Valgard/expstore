@@ -9,7 +9,10 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class ExperienceMessage implements IMessage {
 
+  int amount;
+
   int mode;
+
   int serverX;
   int serverY;
   int serverZ;
@@ -22,18 +25,20 @@ public class ExperienceMessage implements IMessage {
   public ExperienceMessage() {
   }
 
-  public ExperienceMessage(MODE mode, TileEntityExpStore tileEntity) {
+  public ExperienceMessage(MODE mode, TileEntityExpStore tileEntity, int amount) {
     this.mode = mode.ordinal();
     this.serverX = tileEntity.xCoord;
     this.serverY = tileEntity.yCoord;
     this.serverZ = tileEntity.zCoord;
+    this.amount = amount;
   }
 
-  public ExperienceMessage(int mode, TileEntityExpStore tileEntity) {
+  public ExperienceMessage(int mode, TileEntityExpStore tileEntity, int amount) {
     this.mode = mode;
     this.serverX = tileEntity.xCoord;
     this.serverY = tileEntity.yCoord;
     this.serverZ = tileEntity.zCoord;
+    this.amount = amount;
   }
 
   @Override
@@ -42,6 +47,7 @@ public class ExperienceMessage implements IMessage {
     serverX = buffer.readInt();
     serverY = buffer.readInt();
     serverZ = buffer.readInt();
+    amount = buffer.readInt();
   }
 
   @Override
@@ -50,6 +56,7 @@ public class ExperienceMessage implements IMessage {
     buffer.writeInt(serverX);
     buffer.writeInt(serverY);
     buffer.writeInt(serverZ);
+    buffer.writeInt(amount);
   }
 
   public static class Handler extends AbstractBiDirectionalMessageHandler<ExperienceMessage> {
@@ -69,15 +76,15 @@ public class ExperienceMessage implements IMessage {
       TileEntityExpStore tileEntity = (TileEntityExpStore) player.worldObj.getTileEntity(message.serverX, message.serverY, message.serverZ);
 
       if(message.mode == MODE.STORE.ordinal()) {
-        tileEntity.storeExperiencePoints(player);
+        tileEntity.storeExperiencePoints(player, message.amount);
       } else if (message.mode == MODE.RESTORE.ordinal()) {
-        tileEntity.restoreExperiencePoints(player);
+        tileEntity.restoreExperiencePoints(player, message.amount);
       }
 
       player.worldObj.setTileEntity(message.serverX, message.serverY, message.serverZ, tileEntity);
 
       if(ctx.side == Side.SERVER) {
-        return new ExperienceMessage(message.mode, tileEntity);
+        return new ExperienceMessage(message.mode, tileEntity, message.amount);
       }
 
       return null;
