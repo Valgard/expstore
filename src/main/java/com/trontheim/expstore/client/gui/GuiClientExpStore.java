@@ -267,13 +267,13 @@ public class GuiClientExpStore extends GuiScreen {
     int x = guiLeft + 202;
     int y = guiTop + (ySize / 2) + 10;
     buttonList.add(buttonDirection = new UpDownButton(3, x, y, true));
-    buttonDirection.setUpCharacter("⬆");
-    buttonDirection.setDownCharacter("⬇");
+    buttonDirection.setUpCharacter("\u2B06"); // ⬆
+    buttonDirection.setDownCharacter("\u2B07"); // ⬇
 
     x = guiLeft + 232;
     y = guiTop + (ySize / 2) + 10;
     buttonList.add(buttonExecute = new UpDownButton(4, x, y));
-    buttonExecute.setUpCharacter("▶");
+    buttonExecute.setUpCharacter("\u25B6"); // ▶
 
     int xGab = 15;
     int yGab = 30;
@@ -296,8 +296,8 @@ public class GuiClientExpStore extends GuiScreen {
 
     private boolean down;
 
-    private String upChar = "▲";
-    private String downChar = "▼";
+    private String upChar = "\u25B2"; // ▲
+    private String downChar = "\u25BC"; // ▼
 
     public UpDownButton(int id, int x, int y) {
       this(id, x, y, false);
