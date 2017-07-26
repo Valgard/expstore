@@ -57,6 +57,7 @@ public class GuiClientExpStore extends GuiScreen {
 
   private UpDownButton buttonDirection;
   private UpDownButton buttonExecute;
+  private UpDownButton buttonTakePoints;
 
   public GuiClientExpStore(EntityPlayer player, World world, int x, int y, int z) {
     this.player = player;
@@ -106,6 +107,12 @@ public class GuiClientExpStore extends GuiScreen {
     GL11.glPushMatrix();
     mc.getTextureManager().bindTexture(widgetsLocation);
     drawTexturedModalRect(193, 77, 43, 0, 37, 66);
+    GL11.glPopMatrix();
+
+    // render take points gui element
+    GL11.glPushMatrix();
+    mc.getTextureManager().bindTexture(widgetsLocation);
+    drawTexturedModalRect(25, 81, 80, 0, 21, 58);
     GL11.glPopMatrix();
 
     // render heading
@@ -205,6 +212,11 @@ public class GuiClientExpStore extends GuiScreen {
 
     if(button.id == buttonDirection.id) {
       buttonDirection.setDown(!buttonDirection.getDown());
+      buttonTakePoints.setDown(!buttonTakePoints.getDown());
+    }
+
+    if(button.id == buttonTakePoints.id) {
+      amount = !buttonTakePoints.getDown() ? player.experienceTotal : tileEntity.getStoredExperiencePoints(player);
     }
 
     for(int index = digits - 1; index >= 0; index--) {
@@ -241,6 +253,7 @@ public class GuiClientExpStore extends GuiScreen {
     if(iMaxAmount < amount) {
       amount = iMaxAmount;
     }
+
     boolean enabled = false;
     for(int index = digits - 1; index >= 0; index--) {
       buttonsInc[index].enabled = false;
@@ -274,6 +287,12 @@ public class GuiClientExpStore extends GuiScreen {
     y = guiTop + (ySize / 2) + 10;
     buttonList.add(buttonExecute = new UpDownButton(4, x, y));
     buttonExecute.setUpCharacter("\u25B6"); // ▶
+
+    x = guiLeft + 20;
+    y = guiTop + (ySize / 2) + 10;
+    buttonList.add(buttonTakePoints = new UpDownButton(5, x, y));
+    buttonTakePoints.setUpCharacter("\u21B3"); // ↳
+    buttonTakePoints.setDownCharacter("\u21B1"); // ↱
 
     int xGab = 15;
     int yGab = 30;
