@@ -30,13 +30,10 @@ public class TileEntityExpStore extends TileEntity {
       return false;
     }
 
-    int currentExperienceLevel = player.experienceLevel;
-
-    player.addExperience(-amount);
-
-    if(currentExperienceLevel - player.experienceLevel > 0) {
-      player.addExperienceLevel(player.experienceLevel - currentExperienceLevel);
-    }
+    Experience experience = new Experience(player.experienceTotal - amount);
+    player.experienceTotal = experience.experienceTotal;
+    player.experience = experience.experience;
+    player.experienceLevel = experience.experienceLevel;
 
     if(!this.worldObj.isRemote) {
       player.addChatComponentMessage(new ChatComponentText("experience points stored: " + ((Integer) amount).toString()));
@@ -58,13 +55,10 @@ public class TileEntityExpStore extends TileEntity {
       return false;
     }
 
-    int currentExperienceLevel = player.experienceLevel;
-
-    player.addExperience(amount);
-
-    if(currentExperienceLevel - player.experienceLevel > 0) {
-      player.addExperienceLevel(player.experienceLevel - currentExperienceLevel);
-    }
+    Experience experience = new Experience(player.experienceTotal + amount);
+    player.experienceTotal = experience.experienceTotal;
+    player.experience = experience.experience;
+    player.experienceLevel = experience.experienceLevel;
 
     if(!this.worldObj.isRemote) {
       player.addChatComponentMessage(new ChatComponentText("experience points restored: " + ((Integer) amount).toString()));
